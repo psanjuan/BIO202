@@ -425,48 +425,6 @@ div.tocify {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    W7
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="07-midquarter-anna.html">Anna</a>
-    </li>
-    <li>
-      <a href="07-midquarter-beth.html">Beth</a>
-    </li>
-    <li>
-      <a href="07-midquarter-jamie.html">Jamie</a>
-    </li>
-    <li>
-      <a href="07-midquarter-lizzie.html">Lizzie</a>
-    </li>
-    <li>
-      <a href="07-midquarter-marissa.html">Marissa</a>
-    </li>
-    <li>
-      <a href="07-midquarter-meghan.html">Meghan</a>
-    </li>
-    <li>
-      <a href="07-midquarter-nick.html">Nick</a>
-    </li>
-    <li>
-      <a href="07-midquarter-nicole.html">Nicole</a>
-    </li>
-    <li>
-      <a href="07-midquarter-priscilla.html">Priscilla</a>
-    </li>
-    <li>
-      <a href="07-midquarter-sandra.html">Sandra</a>
-    </li>
-    <li>
-      <a href="07-midquarter-tyler.html">Tyler</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     W8
      
     <span class="caret"></span>
@@ -491,55 +449,13 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="09-A-topic-name.html">Topic 19</a>
+      <a href="09-A-time-series.html">Time series</a>
     </li>
     <li>
-      <a href="09-B-topic-name.html">Topic 20</a>
+      <a href="09-B-networks.html">Network analysis</a>
     </li>
     <li>
-      <a href="09-C-topic-name.html">Topic 21</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    W10
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="10-final-anna.html">Anna</a>
-    </li>
-    <li>
-      <a href="10-final-beth.html">Beth</a>
-    </li>
-    <li>
-      <a href="10-final-jamie.html">Jamie</a>
-    </li>
-    <li>
-      <a href="10-final-lizzie.html">Lizzie</a>
-    </li>
-    <li>
-      <a href="10-final-marissa.html">Marissa</a>
-    </li>
-    <li>
-      <a href="10-final-meghan.html">Meghan</a>
-    </li>
-    <li>
-      <a href="10-final-nick.html">Nick</a>
-    </li>
-    <li>
-      <a href="10-final-nicole.html">Nicole</a>
-    </li>
-    <li>
-      <a href="10-final-priscilla.html">Priscilla</a>
-    </li>
-    <li>
-      <a href="07-midquarter-sandra.html">Sandra</a>
-    </li>
-    <li>
-      <a href="10-final-tyler.html">Tyler</a>
+      <a href="09-C-occupancy-models.html">Occupancy models</a>
     </li>
   </ul>
 </li>
@@ -595,13 +511,20 @@ div.tocify {
 <li>Many applications of Mantel test probably should be done using canonical analysis(e.g. distribution of organisms with respect to environment controlling for distance among sites)</li>
 <li>Do not use Mantel test to make conclusions about correlations in the original data.</li>
 </ul>
-<p><strong>Analysis of Similarity (ANOSIM)</strong></p>
+<p><strong>Analysis of Similarity (ANOSIM)</strong> and <strong>PERMANOVA</strong></p>
 <ul>
-<li>Tests whether distances between groups are greater than within groups.</li>
-<li>Steps:
+<li>ANOSIM tests whether distances between groups are greater than within groups.</li>
+<li>PERMANOVA tests whether distance differ between groups. This wasn’t in the original reading for class, but you can find the method in <a href="http://dx.doi.org/10.1111/j.1442-9993.2001.01070.pp.x">Anderson (2001)</a>.</li>
+<li>Both tests are sensitive to unbalanced designs and differences in dispersion (variance) within groups (e.g. not good when your groups have different variability). <a href="http://dx.doi.org/10.1890/12-2010.1">Anderson and Walsh (2013)</a> conducted a simulation-based comparison of PERMANOVA and ANOSIM and found that PERMANOVA is more robust in general for ecological data, but still sensitive to heterogeneity of variance among groups. You should evaluate this assumption before using either test.</li>
+<li>ANOSIM Steps:
 <ul>
 <li>Rank distances within the distance matrix, then compute the statistic <span class="math inline">\(R = \frac{mean(rank_{between}) - mean(rank_{within})}{n(n-1)/4}\)</span>.</li>
 <li>Test whether <span class="math inline">\(R\)</span> is larger than expected by permuting original objects.</li>
+</ul></li>
+<li>PERMANOVA Steps:
+<ul>
+<li>Calculate an F ratio comparing <span class="math inline">\(F \sim \frac{SS_{within groups}}{SS_across groups}\)</span>, where <span class="math inline">\(SS\)</span> means adding up the sum of the squares of the distances.</li>
+<li>Test whether <span class="math inline">\(F\)</span> is smaller than expected by chance by permuting the original objects.</li>
 </ul></li>
 <li>Groups should be defined <em>a priori</em> and not derived from distances.</li>
 </ul>
@@ -653,6 +576,8 @@ div.tocify {
 <li><code>mantel()</code></li>
 <li><code>protest()</code></li>
 <li><code>anosim()</code></li>
+<li><code>adonis()</code> for PERMANOVA</li>
+<li><code>betadisper()</code> for testing homogeneity of within-group variances</li>
 </ul>
 <p><code>ecodist</code>: functions for analysis of ecological dissimilarity</p>
 <ul>
@@ -763,14 +688,14 @@ DMco1 &lt;-<span class="st"> </span><span class="kw">distance</span>(merged_CO1,
 <li>Search for common structures between two data sets describing the same objects by projecting them onto a common multivariate space</li>
 <li>Uses two responses containing different variables</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dudi.16s &lt;-<span class="st"> </span><span class="kw">dudi.pca</span>(data_16s, <span class="dt">scale=</span>T, <span class="dt">scan=</span>F, <span class="dt">nf=</span><span class="dv">2</span>)
-dudi.c01 &lt;-<span class="st"> </span><span class="kw">dudi.pca</span>(data_CO1, <span class="dt">scale=</span>T, <span class="dt">scan=</span>F, <span class="dt">nf=</span><span class="dv">2</span>)
-co.in.data &lt;-<span class="st"> </span><span class="kw">coinertia</span>(dudi.16s, dudi.c01, <span class="dt">scan=</span>F, <span class="dt">nf=</span><span class="dv">2</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dudi.16s &lt;-<span class="st"> </span><span class="kw">dudi.pca</span>(data_16s, <span class="dt">scale=</span>T, <span class="dt">scan=</span>F, <span class="dt">nf=</span><span class="dv">5</span>)
+dudi.c01 &lt;-<span class="st"> </span><span class="kw">dudi.pca</span>(data_CO1, <span class="dt">scale=</span>T, <span class="dt">scan=</span>F, <span class="dt">nf=</span><span class="dv">5</span>)
+co.in.data &lt;-<span class="st"> </span><span class="kw">coinertia</span>(dudi.16s, dudi.c01, <span class="dt">scan=</span>F, <span class="dt">nf=</span><span class="dv">5</span>)
 <span class="kw">summary</span>(co.in.data)</code></pre></div>
 <pre><code>## Coinertia analysis
 ## 
 ## Class: coinertia dudi
-## Call: coinertia(dudiX = dudi.16s, dudiY = dudi.c01, scannf = F, nf = 2)
+## Call: coinertia(dudiX = dudi.16s, dudiY = dudi.c01, scannf = F, nf = 5)
 ## 
 ## Total inertia: 5763
 ## 
@@ -792,16 +717,25 @@ co.in.data &lt;-<span class="st"> </span><span class="kw">coinertia</span>(dudi.
 ##        eig    covar      sdX      sdY      corr
 ## 1 665.6710 25.80060 6.254968 4.257402 0.9688579
 ## 2 547.4037 23.39666 9.136070 2.684524 0.9539535
+## 3 512.9977 22.64945 8.737747 2.794415 0.9276142
+## 4 420.8116 20.51369 7.022618 4.022149 0.7262508
+## 5 379.6807 19.48540 7.333985 3.131459 0.8484427
 ## 
 ## Inertia &amp; coinertia X (dudi.16s):
-##      inertia      max     ratio
-## 1   39.12463 118.1844 0.3310474
-## 12 122.59240 222.3012 0.5514699
+##         inertia      max     ratio
+## 1      39.12463 118.1844 0.3310474
+## 12    122.59240 222.3012 0.5514699
+## 123   198.94062 311.9950 0.6376404
+## 1234  248.25778 387.0472 0.6414147
+## 12345 302.04511 455.8617 0.6625805
 ## 
 ## Inertia &amp; coinertia Y (dudi.c01):
-##     inertia      max     ratio
-## 1  18.12547 21.19416 0.8552106
-## 12 25.33214 39.64262 0.6390127
+##        inertia      max     ratio
+## 1     18.12547 21.19416 0.8552106
+## 12    25.33214 39.64262 0.6390127
+## 123   33.14089 48.89262 0.6778301
+## 1234  49.31858 58.03207 0.8498505
+## 12345 59.12461 66.77656 0.8854097
 ## 
 ## RV:
 ##  0.518941</code></pre>
@@ -816,7 +750,7 @@ co.in.data &lt;-<span class="st"> </span><span class="kw">coinertia</span>(dudi.
 ## Alternative hypothesis: greater 
 ## 
 ##      Std.Obs  Expectation     Variance 
-## -1.342389332  0.601872044  0.003816607</code></pre>
+## -1.342338615  0.601967484  0.003825686</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(co.in.data)</code></pre></div>
 <p><img src="images/06-C/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
@@ -835,7 +769,13 @@ co.in.data &lt;-<span class="st"> </span><span class="kw">coinertia</span>(dudi.
 <li>measure of concordance, similarity, between two data matrices</li>
 <li>more powerful than Mantel test</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">procrust.data &lt;-<span class="st"> </span><span class="kw">protest</span>(data_CO1, data_16s)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Only run this once and then re-load</span>
+<span class="co">#procrust.data &lt;- protest(data_CO1, data_16s)</span>
+
+<span class="co"># Save and reload the Procrustes analysis results</span>
+<span class="co">#save(procrust.data, file = &quot;data/psanjuan/procrust_data.RData&quot;)</span>
+<span class="kw">load</span>(<span class="st">&quot;data/psanjuan/procrust_data.RData&quot;</span>)
+
 <span class="kw">summary</span>(procrust.data)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(procrust.data)</code></pre></div>
 <p><img src="images/06-C/unnamed-chunk-7-1.png" width="672" /></p>

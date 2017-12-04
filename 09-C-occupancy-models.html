@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Nick" />
+
+
+<title>Occupancy models</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="00-computer-setup.html">Computer Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01-A-R-intro.html">Intro to R</a>
+    </li>
+    <li>
+      <a href="01-B-Rmarkdown-intro.html">R markdown</a>
+    </li>
+    <li>
+      <a href="01-C-R-workshop.html">R workshop</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="02-A-tidyr.html">ggplot2 and tidyr</a>
+    </li>
+    <li>
+      <a href="02-B-git-intro.html">Intro to git</a>
+    </li>
+    <li>
+      <a href="02-C-student-projects.html">Project introductions</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="03-A-data-exploration.html">Data exploration</a>
+    </li>
+    <li>
+      <a href="03-B-linear-models.html">Linear models</a>
+    </li>
+    <li>
+      <a href="03-C-heterogeneity.html">Heterogeneity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W4
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-A-mixed-models.html">Mixed effects models</a>
+    </li>
+    <li>
+      <a href="04-B-binary-data.html">Binary &amp; proportional data</a>
+    </li>
+    <li>
+      <a href="04-C-zero-data.html">Zero-inflated data</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W5
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="05-A-Bayesian-linear-models.html">Bayesian linear models</a>
+    </li>
+    <li>
+      <a href="05-B-Bayesian-priors.html">Bayesian inference with prior information</a>
+    </li>
+    <li>
+      <a href="05-C-Advanced-bayesian-example.html">Advanced Bayesian model example</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W6
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-A-unconstrained-ordination.html">Unconstrained ordination</a>
+    </li>
+    <li>
+      <a href="06-B-constrained-ordination.html">Constrained ordination</a>
+    </li>
+    <li>
+      <a href="06-C-matrix-comparison.html">Comparing multivariate data</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W8
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="08-A-mapping.html">Visualizing spatial data</a>
+    </li>
+    <li>
+      <a href="08-B-spatial-regression.html">Spatial regression</a>
+    </li>
+    <li>
+      <a href="08-C-spatial-ordination.html">Ordination approach to spatial analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    W9
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="09-A-time-series.html">Time series</a>
+    </li>
+    <li>
+      <a href="09-B-networks.html">Network analysis</a>
+    </li>
+    <li>
+      <a href="09-C-occupancy-models.html">Occupancy models</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Occupancy models</h1>
+<h4 class="author"><em>Nick</em></h4>
+
+</div>
+
+
+<p><strong>Assigned Reading:</strong></p>
+<blockquote>
+<p>Kery 2010. Chapter 20: Nonstandard GLMMs 1: Site-Occupancy Species Distribution Model in <em>Introduction to WinBUGS for Ecologists</em> <a href="https://www-sciencedirect-com.stanford.idm.oclc.org/science/book/9780123786050">Stanford full text</a> or try <a href="https://searchworks.stanford.edu/view/8660368">here</a></p>
+</blockquote>
+<blockquote>
+<p>Section 14.3 in Korner-Nievergelt et al. 2015. Bayesian data analysis in ecology using linear models with R, BUGS, and Stan. Elsevier. <a href="http://www.sciencedirect.com/science/book/9780128013700">Stanford full text</a></p>
+</blockquote>
+<div id="key-points" class="section level3">
+<h3>Key Points</h3>
+<div id="definition" class="section level4">
+<h4>Definition</h4>
+<p><strong>Occupancy Model</strong>: Model used to account for imperfect detection of organisms in surveys and to determine the probability of the true presence or absence of a species at a site. This is done by quantifying the detection probability of a species at a site based off of your data.</p>
+</div>
+<div id="background" class="section level4">
+<h4>Background</h4>
+<p>Occupancy models can be thought of as an extension of Generalized Linear Mixed Effects models (GLMMs). In the case of occupancy models, we are interested in the random effects- these values tell us the true state of occurence. As such, we can assume that they are drawn from Bernoulli distribution.</p>
+<p><strong>The occurence of a species at a given location in your data is the result of two processes:</strong><br />
+1. The species is actually present<br />
+2. You detect the species in your survey</p>
+<p><strong>However, the lack of a detection is either the result:</strong><br />
+1. of the species not being present at a site, or<br />
+2. you did not detect the species at the site.</p>
+<p>In occupancy models, we quantify this uncertainty in detection. The value is called the detection probability <span class="math inline">\((p)\)</span>. When <span class="math inline">\(p = 1\)</span>, we have perfectly detected a species. However, it is often difficult to have perfect detection 100% of the time. In most cases, detection probability is less than 1 <span class="math inline">\((p&lt;1)\)</span>.</p>
+</div>
+<div id="why-use-occupancy-models-from-kery-2010-chapter-20" class="section level4">
+<h4>Why use occupancy models? (from Kery 2010; Chapter 20)</h4>
+<ol style="list-style-type: decimal">
+<li>species distributions will be underestimated whenever p &lt; 1</li>
+<li>estimates of covariates relationships will be biased toward zero whenever p &lt; 1</li>
+<li>the factors that affect the difficulty with which is species is found may end up in predictive models of species occurrence</li>
+</ol>
+</div>
+<div id="requirementsassumptions" class="section level4">
+<h4>Requirements/Assumptions</h4>
+<ol style="list-style-type: decimal">
+<li>Repeated surveys at a site within a period of ‘closure’</li>
+<li>Sites must be replicated spatially and independent</li>
+<li>Detection probability is constant or explained by covariates.</li>
+<li>Occupancy probability is constant or explained by covariates</li>
+</ol>
+</div>
+<div id="basic-model-form" class="section level4">
+<h4>Basic model form</h4>
+<p><span class="math inline">\(Z_i \sim Bernoulli (\psi_i)\)</span> Biological process yields true state<br />
+<span class="math inline">\(y_{ij} \sim Bernoulli(Z_i * p_{ij})\)</span> Observation process yields observations (this is the data)</p>
+<p><span class="math inline">\(Z_i\)</span> is the true occupancy state <span class="math inline">\(\psi\)</span> parameter describing the true state, drawn from a Bernoulli distribution. This can be modeled with covariates.<br />
+<span class="math inline">\(p_{ij}\)</span> is the detection probability<br />
+These values are estimated from the data in your model</p>
+<p>You can include the same or separate covariates in the detection and occupancy components of the model, similar to Zero-Inflated models from a few weeks ago.</p>
+</div>
+<div id="extensions" class="section level4">
+<h4>Extensions</h4>
+<p>The problem of detectability is further compounded when trying to measure abundance. When you move from presence/absence to number of individuals, the probability that you have counted (detected) every individual moves further away from zero. As an extension of the occupancy model, the N-mixture abundance model can account for imperfect detection of individuals within a species. To do this, we simply assume that local abundance at a site is described by a Poisson distribution.</p>
+<p><span class="math inline">\(N_i \sim Poisson(\lambda)\)</span> 1. Ecological process that produces true population size</p>
+<p><span class="math inline">\(y_{ij}|N_i \sim Binomial(N_i, p)\)</span> 2. Observation process gives counts</p>
+<p><span class="math inline">\(\lambda\)</span> describes the variation in abundance at sites. This parameter can be modeled with covariates to describes differences in <span class="math inline">\(N_i\)</span>.<br />
+<span class="math inline">\(y_{ij}\)</span> are the observed counts, given the true population size <span class="math inline">\(N_i\)</span> are a result of you ability to detect individuals with detection probability <span class="math inline">\(p\)</span>.</p>
+<p>Additional reading can be found in Chapter 21 of Kery 2010.</p>
+</div>
+</div>
+<div id="analysis-example" class="section level3">
+<h3>Analysis Example</h3>
+<p>For this example, we will be using Costa Rican bird banding data that I (and others) collected in 2016. The examples use simple Occupancy models from <em>Korner-Nievergelt et al. 2015.</em> Two different data objects will be used, one for the Ochre-bellied Flycatcher (OBFL), and one for the Violet Sabrewing (VISA). Each data object contains presence/absence information from 6 surveys (j replicates) across 18 sites, as well as the standardized Julian Date from 2016.</p>
+<p>The rstan package is used to interface with Stan, and the blmeco package, which contains functions from <em>Korner-Nievergelt et al. 2015.</em></p>
+<p>Set working directory, load packages and the two separate data objects.</p>
+<pre class="r"><code>#setwd(&quot;&quot;)```
+
+#############################################
+library(rstan) 
+library(blmeco)
+load(&#39;./data/OBFL_Occupancy_Stan.RData&#39;, verbose = T)</code></pre>
+<pre><code>## Loading objects:
+##   data.obfl</code></pre>
+<pre class="r"><code>load(&#39;./data/VISA_Occupancy_Stan.RData&#39;, verbose = T)</code></pre>
+<pre><code>## Loading objects:
+##   data.visa</code></pre>
+<p>Let’s start by exploring the OBFL data object; bundled to work with Stan.<br />
+We see that there are 18 sites (N), 6 replicates at each site (J), observed occupancy at almost all sites (x), and standardized sampling date as Julian Date (DAY).</p>
+<pre class="r"><code>data.obfl</code></pre>
+<pre><code>## $y
+##       rep
+## Site   1 2 3 4 5 6
+##   CAGO 1 1 1 1 1 1
+##   COPA 1 1 1 1 1 1
+##   ELPU 0 0 0 0 0 0
+##   FILA 0 1 1 1 1 1
+##   GABO 1 1 0 0 0 1
+##   GAPA 1 1 1 1 1 1
+##   ISLA 1 1 0 0 0 0
+##   LOAN 1 1 0 1 1 1
+##   MELI 1 1 1 1 1 1
+##   PANA 1 0 1 0 1 0
+##   PINO 0 1 1 1 1 1
+##   QUST 0 0 0 1 0 0
+##   RIJA 1 1 0 1 1 1
+##   SABO 1 0 1 0 0 0
+##   SAFR 1 0 0 0 0 0
+##   SAGA 1 0 0 1 0 0
+##   SARI 1 1 1 0 1 0
+##   SATE 1 1 0 0 1 0
+## 
+## $N
+## [1] 18
+## 
+## $J
+## [1] 6
+## 
+## $x
+##  [1] 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## 
+## $DAY
+##               1          2            3          4         5         6
+## CAGO -1.5619565 -1.4612762 -1.360595841 -0.7061737 1.3074329 1.3577730
+## COPA -0.8068540 -0.6558335 -0.102091735  0.6026706 0.8040312 1.6094738
+## ELPU -0.9578745 -0.5048130 -0.001411406  0.6530107 0.7033509 1.5087935
+## FILA -0.8068540 -0.2531122  0.048928758  0.5019902 0.9550517 1.7604943
+## GABO -0.7565139 -0.3537926  0.300629579  0.5523304 0.8543714 1.1564124
+## GAPA -0.7565139 -0.4041327  0.199949251  0.5523304 0.8543714 1.1564124
+## ISLA -1.2599155 -1.1592352 -1.058554856 -0.2027721 1.2570927 1.5591337
+## LOAN -1.2095753 -1.1088950 -1.008214691 -0.4544729 1.3577730 1.6094738
+## MELI -1.5116163 -1.4109360 -1.310255677 -0.1524319 0.7536911 1.2067525
+## PANA -0.8571942 -0.5048130 -0.051751571  0.1496091 1.0053919 1.6598140
+## PINO -1.2599155 -1.1592352 -1.058554856 -0.2027721 0.9047116 1.1060722
+## QUST -0.9075344 -0.5551532  0.099268922  0.4013099 1.4584534 1.7101542
+## RIJA -1.5116163 -1.4109360 -1.310255677 -0.1524319 0.7536911 1.2067525
+## SABO -0.8571942 -0.3034524 -0.051751571  0.1496091 1.0053919 1.0557320
+## SAFR -1.2095753 -1.1088950 -1.008214691  0.3006296 0.3509697 0.8040312
+## SAGA -1.5619565 -1.4612762 -1.360595841 -0.7061737 0.7033509 1.3074329
+## SARI -0.9578745 -0.6054934  0.250289415  0.4516501 1.4081132 1.7101542
+## SATE -0.9075344 -0.3537926  0.099268922  0.4013099 1.0557320 0.0000000</code></pre>
+<p>Now we will write the stan model. This is modified from <em>Korner-Nievergelt et al. 2015.</em></p>
+<p>The model has two main components. The first component is the occupancy model, which describes the true occupancy state of the OBFL across the 18 sites. For simplicity, we are using an intercept only model, without any covariates describing true occupancy state across the 18 sites.</p>
+<p>The second part of the model is the detection process, that determines detection probability across the 18 sites for each survey replicate. Because the focus of this example is on detection probability, we did include covariates, Julian date and its quadratic. As such, we expect detection probability to be influenced by time of year.</p>
+<p><em>Basic model form</em></p>
+<p><span class="math inline">\(logit(p_{ij}) = \beta_0 + \beta_1 * DAY_{ij} + \beta_2 * DAY_{ij} * DAY_{ij}\)</span><br />
+<span class="math inline">\(logit(\psi_i) = \alpha_0\)</span> Assumes occupancy is equal among all sites</p>
+<pre class="stan"><code>sink(&quot;./src/occupancy.stan&quot;)
+cat(&quot;
+  data {
+  int&lt;lower=0&gt; N; //Number of Sites
+    int&lt;lower=6&gt; J; //Number of Replicates at each site
+    int&lt;lower=0, upper=1&gt; y[N, J]; //Detection at each site on each sampling rep
+    int&lt;lower=0, upper=1&gt; x[N]; //Observed occupancy at each site
+    real DAY[N, J];
+    }
+    
+    parameters {
+    real a0; //specifying regression parameters
+    real b0;
+    real b1;
+    real b2;
+    }
+    
+    transformed parameters {
+    real&lt;lower=0,upper=1&gt;  psi[N]; 
+    real&lt;lower=0,upper=1&gt;  p[N, J];
+    for(i in 1:N) {
+    psi[i] = inv_logit(a0);  //intercept-only model for occupancy
+    for(j in 1:J) {
+    p[i, j] = inv_logit(b0 + b1*DAY[i, j] + b2*DAY[i, j]*DAY[i, j]); //Detection probability on inverse logit
+    }
+    }
+    }
+    
+    model {
+    // Priors
+    a0 ~ normal(0, 5);
+    b0 ~ normal(0, 5);
+    b1 ~ normal(0, 5);
+    b2 ~ normal(0, 5);
+    
+    // likelihood
+    for(i in 1:N) {
+    if(x[i]==1) {
+    1 ~ bernoulli(psi[i]);
+    y[i] ~ bernoulli(p[i]);
+    }
+    if(x[i]==0) {
+    increment_log_prob(log_sum_exp(log(psi[i]) + log1m(p[i,1]) + log1m(p[i,2]) + 
+    log1m(p[i,3]) + log1m(p[i,4]) + log1m(p[i,5]) + log1m(p[i,6]), log1m(psi[i]))); //?
+    }
+    }
+    }
+    
+    &quot;,fill = TRUE)
+sink()</code></pre>
+<p>Now let’s fit the occupancy model that we wrote;</p>
+<p>Apparently running Stan models while trying to Knit in Rmarkdown is difficult. The model output is saved, so it can be loaded for use. Alternatively, you can run the code in Rmarkdown without Knitting or in your R console.</p>
+<p>For now, we will just load the data output that I ran on my computer and uploaded.</p>
+<pre class="r"><code>load(&#39;./data/OBFL.occ.RData&#39;, verbose = T)</code></pre>
+<pre><code>## Loading objects:
+##   OBFL.occ</code></pre>
+<pre class="r"><code># OBFL.occ = stan(file = &quot;./src/occupancy.stan&quot;, data = data.obfl, iter = 2000, chains = 3)</code></pre>
+<p>You may get some error messages when you run the model. How to deal with this depends on what the message says. Some of the language in the model above is depracated, but the model should run fine.</p>
+<pre class="r"><code>print(OBFL.occ, c(&quot;a0&quot;, &quot;b0&quot;, &quot;b1&quot;, &quot;b2&quot;))</code></pre>
+<pre><code>## Inference for Stan model: occupancy.
+## 3 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=3000.
+## 
+##     mean se_mean   sd  2.5%   25%   50%   75% 97.5% n_eff Rhat
+## a0  3.63    0.06 1.78  1.45  2.45  3.20  4.26  8.51   857    1
+## b0  0.41    0.01 0.33 -0.20  0.18  0.41  0.64  1.05  1540    1
+## b1 -0.27    0.00 0.22 -0.71 -0.42 -0.27 -0.13  0.17  2180    1
+## b2  0.15    0.01 0.25 -0.33 -0.03  0.15  0.32  0.65  1573    1
+## 
+## Samples were drawn using NUTS(diag_e) at Thu Nov 30 16:59:19 2017.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>Check for convergence of our model parameters</p>
+<pre class="r"><code>traceplot(OBFL.occ, &quot;a0&quot;) # intercept for occupancy model</code></pre>
+<p><img src="images/09-C/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>traceplot(OBFL.occ, &quot;b0&quot;) # intercept for detection model</code></pre>
+<p><img src="images/09-C/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>traceplot(OBFL.occ, &quot;b1&quot;) # regression parameter for julian date</code></pre>
+<p><img src="images/09-C/unnamed-chunk-6-3.png" width="672" /></p>
+<pre class="r"><code>traceplot(OBFL.occ, &quot;b2&quot;) # regression parameter for (julian date)^2</code></pre>
+<p><img src="images/09-C/unnamed-chunk-6-4.png" width="672" /></p>
+<p>Often, we are interested in understanding how detection probability changes in relationship to our detection covariates. To address this, we can plot the predicted detection probabilty throughout the range of our covariate values. Here, we are interested in how it changes through Julian date, or through the season.</p>
+<p>Plot predicted relationship between detection probability throughout the season.</p>
+<p>To do this, loop through and multiply simulated values by dates. Because our values are on the logit scale, we transform our values using the plogis function to put them on the normal scale.</p>
+<pre class="r"><code>pred.DAY &lt;- 1:102 # original dates span from Jan 18 - April 28, 2016; 102 days
+pred.trDAY &lt;- scale(pred.DAY)
+modsims &lt;- rstan::extract(OBFL.occ)
+nsim &lt;- length(modsims$lp__)  
+newp &lt;- array(dim=c(length(pred.DAY), nsim))
+for(i in 1:nsim){ ## Loop through simulations 
+  newp[,i] &lt;- plogis(modsims$b0[i] + modsims$b1[i]*pred.trDAY + modsims$b2[i]*pred.trDAY^2)
+}</code></pre>
+<p>Sketch the results</p>
+<pre class="r"><code>plot(NA, ylim=c(0,1), xlim=c(1, 102), axes=T, ylab=&quot;Detection probability&quot;, xlab=&quot;Julian Day (2016)&quot;, cex.lab=1.2)
+polygon(c(pred.DAY, pred.DAY[length(pred.DAY):1]), c(apply(newp, 1, quantile, probs=0.025), apply(newp, 1, quantile, probs=0.975)[length(pred.DAY):1]), col=&quot;grey80&quot;, border=&quot;grey80&quot;)
+lines(pred.DAY, apply(newp, 1, mean), col=&quot;blue&quot;, lwd=2.)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-8-1.png" width="672" /> As expected, detection probability is really high for the OBFL. It is a common bird found in most sites on most sampling dates.</p>
+<p>Finally, we can look at the number of sites that OBFL is predicted to occur at based on our model, and compare this with what was actually observed</p>
+<pre class="r"><code>modsims &lt;- rstan::extract(OBFL.occ)
+
+
+# Predicted mean
+# quantile(plogis(modsims$a0), prob=c(0.025, 0.5, 0.957))
+
+# The quantile function would not Knit in Rmarkdown. Output is:
+
+     # 2.5%       50%     95.7% 
+# 0.8092648 0.9610082 0.9994805 
+
+
+# Observed mean
+mean(data.obfl$x)</code></pre>
+<pre><code>## [1] 0.9444444</code></pre>
+<p>We see that they are very similar. Our sampling was sufficient for this species.</p>
+<p>Now we can look at a species that is much less common. The Violet Sabrewing is a species of hummingbird that likes more forested areas, but can also be found in agriculture</p>
+<pre class="r"><code>data.visa</code></pre>
+<pre><code>## $y
+##       rep
+## Site   1 2 3 4 5 6
+##   CAGO 0 0 0 0 0 0
+##   COPA 0 0 0 1 0 0
+##   ELPU 1 0 0 1 1 0
+##   FILA 1 0 1 0 1 1
+##   GABO 0 0 0 1 0 0
+##   GAPA 0 1 0 1 1 1
+##   ISLA 0 0 0 0 0 0
+##   LOAN 1 0 0 0 0 0
+##   MELI 1 0 1 1 1 1
+##   PANA 1 0 0 0 0 0
+##   PINO 0 0 0 0 0 0
+##   QUST 0 0 0 0 0 0
+##   RIJA 0 0 1 0 0 1
+##   SABO 1 0 1 0 0 0
+##   SAFR 0 0 0 0 1 0
+##   SAGA 0 0 0 0 0 0
+##   SARI 0 0 0 0 0 0
+##   SATE 0 0 1 0 0 0
+## 
+## $N
+## [1] 18
+## 
+## $J
+## [1] 6
+## 
+## $x
+##  [1] 0 1 1 1 1 1 0 1 1 1 0 0 1 1 1 0 0 1
+## 
+## $DAY
+##               1          2            3          4         5         6
+## CAGO -1.5619565 -1.4612762 -1.360595841 -0.7061737 1.3074329 1.3577730
+## COPA -0.8068540 -0.6558335 -0.102091735  0.6026706 0.8040312 1.6094738
+## ELPU -0.9578745 -0.5048130 -0.001411406  0.6530107 0.7033509 1.5087935
+## FILA -0.8068540 -0.2531122  0.048928758  0.5019902 0.9550517 1.7604943
+## GABO -0.7565139 -0.3537926  0.300629579  0.5523304 0.8543714 1.1564124
+## GAPA -0.7565139 -0.4041327  0.199949251  0.5523304 0.8543714 1.1564124
+## ISLA -1.2599155 -1.1592352 -1.058554856 -0.2027721 1.2570927 1.5591337
+## LOAN -1.2095753 -1.1088950 -1.008214691 -0.4544729 1.3577730 1.6094738
+## MELI -1.5116163 -1.4109360 -1.310255677 -0.1524319 0.7536911 1.2067525
+## PANA -0.8571942 -0.5048130 -0.051751571  0.1496091 1.0053919 1.6598140
+## PINO -1.2599155 -1.1592352 -1.058554856 -0.2027721 0.9047116 1.1060722
+## QUST -0.9075344 -0.5551532  0.099268922  0.4013099 1.4584534 1.7101542
+## RIJA -1.5116163 -1.4109360 -1.310255677 -0.1524319 0.7536911 1.2067525
+## SABO -0.8571942 -0.3034524 -0.051751571  0.1496091 1.0053919 1.0557320
+## SAFR -1.2095753 -1.1088950 -1.008214691  0.3006296 0.3509697 0.8040312
+## SAGA -1.5619565 -1.4612762 -1.360595841 -0.7061737 0.7033509 1.3074329
+## SARI -0.9578745 -0.6054934  0.250289415  0.4516501 1.4081132 1.7101542
+## SATE -0.9075344 -0.3537926  0.099268922  0.4013099 1.0557320 0.0000000</code></pre>
+<p>We will use the same model to look at how detection probability changes for this species throughout the sampling season.</p>
+<pre class="r"><code># VISA.occ &lt;- stan(file = &quot;./src/occupancy.stan&quot;, data = data.visa, iter = 2000, chains = 3)
+load(&#39;./data/VISA.occ.RData&#39;, verbose=T)</code></pre>
+<pre><code>## Loading objects:
+##   VISA.occ</code></pre>
+<pre class="r"><code>print(VISA.occ, c(&quot;a0&quot;, &quot;b0&quot;, &quot;b1&quot;, &quot;b2&quot;))</code></pre>
+<pre><code>## Inference for Stan model: occupancy.
+## 3 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=3000.
+## 
+##     mean se_mean   sd  2.5%   25%   50%   75% 97.5% n_eff Rhat
+## a0  2.43    0.09 2.31  0.04  0.94  1.61  3.14  9.00   731    1
+## b0 -0.75    0.01 0.36 -1.45 -0.99 -0.76 -0.50 -0.06  1501    1
+## b1  0.12    0.01 0.28 -0.43 -0.08  0.12  0.30  0.65  1779    1
+## b2 -0.17    0.01 0.33 -0.79 -0.41 -0.18  0.06  0.51  1484    1
+## 
+## Samples were drawn using NUTS(diag_e) at Thu Nov 30 17:00:41 2017.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<p>Assess model convergence</p>
+<pre class="r"><code>traceplot(VISA.occ, &quot;a0&quot;)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>traceplot(VISA.occ, &quot;b0&quot;)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-13-2.png" width="672" /></p>
+<pre class="r"><code>traceplot(VISA.occ, &quot;b0&quot;)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-13-3.png" width="672" /></p>
+<pre class="r"><code>traceplot(VISA.occ, &quot;b1&quot;)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-13-4.png" width="672" /></p>
+<pre class="r"><code>traceplot(VISA.occ, &quot;b2&quot;)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-13-5.png" width="672" /></p>
+<p>Predict detection probability and plot</p>
+<pre class="r"><code>pred.DAY &lt;- 1:102 # original dates span from Jan 18 - April 28, 2016; 102 days
+pred.trDAY &lt;- scale(pred.DAY)
+modsims &lt;- rstan::extract(VISA.occ)
+nsim &lt;- length(modsims$lp__)  
+newp.visa &lt;- array(dim=c(length(pred.DAY), nsim))
+for(i in 1:nsim){
+  newp.visa[,i] &lt;- plogis(modsims$b0[i] + modsims$b1[i]*pred.trDAY + modsims$b2[i]*pred.trDAY^2)
+}
+
+# Make figure
+
+plot(NA, ylim=c(0,1), xlim=c(1, 102), axes=T, ylab=&quot;Detection probability&quot;, xlab=&quot;Julian Day (2016)&quot;, cex.lab=1.2)
+polygon(c(pred.DAY, pred.DAY[length(pred.DAY):1]), c(apply(newp.visa, 1, quantile, probs=0.025), apply(newp.visa, 1, quantile, probs=0.975)[length(pred.DAY):1]), col=&quot;grey80&quot;, border=&quot;grey80&quot;)
+lines(pred.DAY, apply(newp.visa, 1, mean), col=&quot;blue&quot;, lwd=2.)</code></pre>
+<p><img src="images/09-C/unnamed-chunk-14-1.png" width="672" /></p>
+<p>We see much lower detection probability for this species, which suggests that, even on days that we did not capture this bird, it may have been present at the site.</p>
+<p>Let’s look at the predicted number of sites VISA occupies vs. the observed number of occupied sites.</p>
+<pre class="r"><code>modsims &lt;- rstan::extract(VISA.occ)
+# Predicted mean
+# quantile(plogis(modsims$a0), prob=c(0.025, 0.5, 0.957))
+
+# The quantile function would not Knit in Rmarkdown. Output is:
+
+     # 2.5%       50%     95.7% 
+# 0.5103046 0.8336505 0.9996000
+
+# Observed mean
+mean(data.visa$x)</code></pre>
+<pre><code>## [1] 0.6666667</code></pre>
+<p>The model predicts that VISA is present at 82.65% of the sites, whereas it was only observed at 66.67% of the sites. This is a good example of how accounting for detection probability can be important for understanding the full distribution of a species across your sites.</p>
+</div>
+<div id="discussion-questions" class="section level3">
+<h3>Discussion Questions</h3>
+<ol style="list-style-type: decimal">
+<li>What are a few big problem with the models used above?<br />
+</li>
+<li>Value in using occupancy models in your work?<br />
+</li>
+<li>How big of a problem is it to not capture true detection? Does it depend on the question?</li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
